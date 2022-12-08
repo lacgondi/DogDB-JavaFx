@@ -1,9 +1,7 @@
 package hu.petrik.dogsdbfx;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DogDB {
@@ -29,8 +27,20 @@ public class DogDB {
         return stmt.executeUpdate() > 0;
     }
 
-    public List<Dog> readDogs(){
-
+    public List<Dog> readDogs() throws SQLException {
+        List<Dog> dogs = new ArrayList<>();
+        String sql = "SELECT * FROM dogs";
+        Statement stmt = con.createStatement();
+        ResultSet results = stmt.executeQuery(sql);
+        while (results.next()) {
+            int id = results.getInt("id");
+            String name = results.getString("name");
+            int age = results.getInt("age");
+            String breed = results.getString("breed");
+            Dog dog = new Dog(id,name,age,breed);
+            dogs.add(dog);
+        }
+        return dogs;
     }
 
     public void updateDog(){
