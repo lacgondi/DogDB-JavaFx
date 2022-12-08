@@ -46,12 +46,16 @@ public class DogController {
             readDogs();
         } catch (SQLException e) {
             Platform.runLater(() -> {
-                alert(Alert.AlertType.ERROR,
-                        "Hiba történt az adatbázis kapcsolat kialakításakor",
-                        e.getMessage());
+                sqlAlert(e);
                 Platform.exit();
             });
         }
+    }
+
+    private void sqlAlert(SQLException e) {
+        alert(Alert.AlertType.ERROR,
+                "Hiba történt az adatbázis kapcsolat kialakításakor",
+                e.getMessage());
     }
 
     private void readDogs() throws SQLException {
@@ -81,8 +85,31 @@ public class DogController {
         int age = ageInput.getValue();
         String breed = breedInput.getText().trim();
         if(name.isEmpty()){
-            alert();
+            alert(Alert.AlertType.ERROR, "Név megadása kötelező","");
+            return;
         }
+        if(breed.isEmpty()){
+            alert(Alert.AlertType.ERROR, "Fajta megadása kötelező","");
+            return;
+        }
+        Dog dog = new Dog(name,age,breed);
+        try {
+            if(db.createDog(dog)){
+                alert(Alert.AlertType.WARNING, "Sikeres felvétel", "");
+                readDogs();
+                resetForm();
+            }else{
+                alert(Alert.AlertType.WARNING, "Siktertelen felvétel", "");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void resetForm() {
+        nameInput.setText("");
+        ageInput.getValueFactory().setValue(0);
+        breedInput.setText("");
     }
 
     @FXML
