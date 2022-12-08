@@ -23,7 +23,7 @@ public class DogController {
     private DogDB db;
 
     @FXML
-    private void initialize(){
+    public void initialize(){
         nameCol.setCellFactory(new PropertyValueFactory<>("name"));
         ageCol.setCellFactory(new PropertyValueFactory<>("age"));
         breedCol.setCellFactory(new PropertyValueFactory<>("breed"));
