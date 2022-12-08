@@ -82,9 +82,27 @@ public class DogController {
         int selectedIndex = dogTable.getSelectionModel().getSelectedIndex();
         if(selectedIndex == -1){
             alert(Alert.AlertType.WARNING, "Törléshez válasszon ki egy kutyát a táblázatból","");
+            return;
         }
-
+        Optional<ButtonType> optionalButtonType = alert(Alert.AlertType.CONFIRMATION,
+                "Biztos, hogy törölni szeretné a viláasztott kutyát?", "");
+        if (optionalButtonType.isEmpty() ||
+                (!optionalButtonType.get().equals(ButtonType.OK) &&
+                        !optionalButtonType.get().equals(ButtonType.YES))) {
+            return;
+        }
         Dog selected = dogTable.getSelectionModel().getSelectedItem();
+
+        try {
+            if (db.deleteDog(selected.getId())) {
+                alert(Alert.AlertType.WARNING, "Sikeres törlés", "");
+            } else {
+                alert(Alert.AlertType.WARNING, "Sikertelen törlés", "");
+            }
+            readDogs();
+        } catch (SQLException e) {
+            sqlAlert(e);
+        }
     }
 
     @FXML
