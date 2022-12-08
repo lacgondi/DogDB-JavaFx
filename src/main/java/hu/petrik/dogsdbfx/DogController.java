@@ -6,8 +6,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public class DogController {
 
@@ -64,11 +66,11 @@ public class DogController {
         dogTable.getItems().addAll(dogs);
     }
 
-    private void alert(Alert.AlertType alertType, String headerText, String contentText) {
+    private Optional<ButtonType> alert(Alert.AlertType alertType, String headerText, String contentText) {
         Alert alert = new Alert(alertType);
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
-        alert.showAndWait();
+        return alert.showAndWait();
     }
 
     @FXML
@@ -77,6 +79,12 @@ public class DogController {
 
     @FXML
     public void deleteClick(ActionEvent actionEvent) {
+        int selectedIndex = dogTable.getSelectionModel().getSelectedIndex();
+        if(selectedIndex == -1){
+            alert(Alert.AlertType.WARNING, "Törléshez válasszon ki egy kutyát a táblázatból","");
+        }
+
+        Dog selected = dogTable.getSelectionModel().getSelectedItem();
     }
 
     @FXML
